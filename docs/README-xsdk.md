@@ -1,6 +1,6 @@
 # Xbox 360 (xsdk)
 
-SDL port for the Xbox 360 through [xsdk](https://github.com/Pheeeeenom/xsdk), a homebrew SDK that builds titles for
+SDL port for the Xbox 360 through [xsdk](https://github.com/xenosworks/xsdk), a homebrew SDK that builds titles for
 the console's retail kernel. This is an altered version of SDL 3.4.10; the changes are on the `xenon` branch.
 
 ## Building
@@ -25,5 +25,5 @@ xsdk's `xsdk_add_xex()`; `test/xsdk` is such a title.
     beside it.
 -   Threads, timers and time come from xsdk's pthreads and POSIX clocks.
 -   There's no video, render or GPU driver of the console's own; only SDL's dummy and offscreen video drivers. Titles
-    draw with xsdk's GPU layer or [vulkan4xenon](https://github.com/Pheeeeenom/vulkan4xenon).
+    draw with xsdk's GPU layer or [vulkan4xenon](https://github.com/xenosworks/vulkan4xenon).
 -   `test/xsdk/sdl_check.c` checks the platform's name, paths, timer, threads, controller and audio on the console.
