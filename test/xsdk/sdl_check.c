@@ -11,7 +11,7 @@
 */
 
 /* Checks SDL's xsdk drivers on the Xbox 360: the platform's name, paths, the timer, threads, the controller and
-   audio. Each check writes PASS or FAIL to xsdk's log, game:\xsdk.log. */
+   audio. Each check writes PASS or FAIL to xsdk's log, named after the title: game:\sdl_check.log. */
 
 #include <SDL3/SDL.h>
 
