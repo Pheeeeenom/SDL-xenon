@@ -304,7 +304,8 @@ dep_option(SDL_SSE3                "Use SSE3 assembly routines" ON "SDL_ASSEMBLY
 dep_option(SDL_SSE4_1              "Use SSE4.1 assembly routines" ON "SDL_ASSEMBLY;SDL_CPU_X86 OR SDL_CPU_X64" OFF)
 dep_option(SDL_SSE4_2              "Use SSE4.2 assembly routines" ON "SDL_ASSEMBLY;SDL_CPU_X86 OR SDL_CPU_X64" OFF)
 dep_option(SDL_MMX                 "Use MMX assembly routines" ON "SDL_ASSEMBLY;SDL_CPU_X86 OR SDL_CPU_X64" OFF)
-# xsdk's Uint32 is unsigned long, and the Altivec blitters hand vec_st Uint32 pointers, which it takes only as unsigned int.
+# Xenon lacks some AltiVec instructions, which xsdk's toolchain keeps its own vectorizer off for (its
+# tools/toolchain/build.sh, from libxenon's gcc-9.2.0.diff); the Altivec blitters haven't been checked against them.
 dep_option(SDL_ALTIVEC             "Use Altivec assembly routines" ON "SDL_ASSEMBLY;SDL_CPU_POWERPC32 OR SDL_CPU_POWERPC64;NOT XSDK" OFF)
 dep_option(SDL_ARMNEON             "Use NEON assembly routines" ON "SDL_ASSEMBLY;SDL_CPU_ARM32 OR SDL_CPU_ARM64" OFF)
 dep_option(SDL_LSX                 "Use LSX assembly routines" ON "SDL_ASSEMBLY;SDL_CPU_LOONGARCH64" OFF)
@@ -3357,13 +3358,8 @@ elseif(XSDK)
   endif()
 
   if(SDL_AUDIO)
-    # The kernel calls the driver back through xsdk's assembly entry, which keeps the registers its code relies on.
-    enable_language(ASM)
     set(SDL_AUDIO_DRIVER_XSDK 1)
-    sdl_glob_sources(
-      "${SDL3_SOURCE_DIR}/src/audio/xsdk/*.c"
-      "${SDL3_SOURCE_DIR}/src/audio/xsdk/*.S"
-    )
+    sdl_glob_sources("${SDL3_SOURCE_DIR}/src/audio/xsdk/*.c")
     set(HAVE_SDL_AUDIO TRUE)
   endif()
 

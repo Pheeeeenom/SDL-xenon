@@ -54,11 +54,8 @@ struct SDL_PrivateAudioData
 
 static struct SDL_PrivateAudioData XSDKAUD_hidden;
 
-void XSDKAUD_KernelEntry(const Uint32 *context);
-void XSDKAUD_KernelCallback(const Uint32 *context);
-
-// Runs on the kernel's audio thread, through XSDK_KERNEL_ENTRY, each time the driver wants a frame.
-void XSDKAUD_KernelCallback(const Uint32 *context)
+// Runs on the kernel's audio thread each time the driver wants a frame.
+static void XSDKAUD_KernelCallback(const Uint32 *context)
 {
     struct SDL_PrivateAudioData *hidden = (struct SDL_PrivateAudioData *)(uintptr_t)*context;
     const Uint32 driver = SDL_GetAtomicU32(&hidden->driver);
@@ -101,7 +98,7 @@ static bool XSDKAUD_OpenDevice(SDL_AudioDevice *device)
     }
     SDL_memset(hidden->frames, 0, frames_bytes);
 
-    const XAUDIO_RENDER_DRIVER_CLIENT client = { XSDKAUD_KernelEntry, (Uint32)(uintptr_t)hidden };
+    const XAUDIO_RENDER_DRIVER_CLIENT client = { XSDKAUD_KernelCallback, (Uint32)(uintptr_t)hidden };
     Uint32 driver = 0;
     const Uint32 result = XAudioRegisterRenderDriverClient(&client, &driver);
     if (result != ERROR_SUCCESS) {
