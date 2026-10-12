@@ -148,13 +148,13 @@ endif()
 #  for the time being. This default will change to ON once this becomes
 #  commonly supported in browsers or the Emscripten team makes a single
 #  binary work everywhere.
-if (UNIX_OR_MAC_SYS AND NOT EMSCRIPTEN)
+if ((UNIX_OR_MAC_SYS AND NOT EMSCRIPTEN) OR XSDK)
   set(SDL_PTHREADS_DEFAULT ON)
 else()
   set(SDL_PTHREADS_DEFAULT OFF)
 endif()
 
-if(UNIX_SYS OR ANDROID)
+if(UNIX_SYS OR ANDROID OR XSDK)
   set(SDL_CLOCK_GETTIME_DEFAULT ON)
 else()
   set(SDL_CLOCK_GETTIME_DEFAULT OFF)
@@ -207,7 +207,7 @@ if(EMSCRIPTEN)
   set(SDL_SHARED_AVAILABLE OFF)
 endif()
 
-if(VITA OR PSP OR PS2 OR N3DS OR RISCOS OR NGAGE)
+if(VITA OR PSP OR PS2 OR N3DS OR RISCOS OR NGAGE OR XSDK)
   set(SDL_SHARED_AVAILABLE OFF)
 endif()
 
@@ -304,7 +304,8 @@ dep_option(SDL_SSE3                "Use SSE3 assembly routines" ON "SDL_ASSEMBLY
 dep_option(SDL_SSE4_1              "Use SSE4.1 assembly routines" ON "SDL_ASSEMBLY;SDL_CPU_X86 OR SDL_CPU_X64" OFF)
 dep_option(SDL_SSE4_2              "Use SSE4.2 assembly routines" ON "SDL_ASSEMBLY;SDL_CPU_X86 OR SDL_CPU_X64" OFF)
 dep_option(SDL_MMX                 "Use MMX assembly routines" ON "SDL_ASSEMBLY;SDL_CPU_X86 OR SDL_CPU_X64" OFF)
-dep_option(SDL_ALTIVEC             "Use Altivec assembly routines" ON "SDL_ASSEMBLY;SDL_CPU_POWERPC32 OR SDL_CPU_POWERPC64" OFF)
+# xsdk's Uint32 is unsigned long, and the Altivec blitters hand vec_st Uint32 pointers, which it takes only as unsigned int.
+dep_option(SDL_ALTIVEC             "Use Altivec assembly routines" ON "SDL_ASSEMBLY;SDL_CPU_POWERPC32 OR SDL_CPU_POWERPC64;NOT XSDK" OFF)
 dep_option(SDL_ARMNEON             "Use NEON assembly routines" ON "SDL_ASSEMBLY;SDL_CPU_ARM32 OR SDL_CPU_ARM64" OFF)
 dep_option(SDL_LSX                 "Use LSX assembly routines" ON "SDL_ASSEMBLY;SDL_CPU_LOONGARCH64" OFF)
 dep_option(SDL_LASX                "Use LASX assembly routines" ON "SDL_ASSEMBLY;SDL_CPU_LOONGARCH64" OFF)
@@ -3314,6 +3315,36 @@ elseif(N3DS)
     "${SDL3_SOURCE_DIR}/src/io/n3ds/*.c"
     "${SDL3_SOURCE_DIR}/src/io/n3ds/*.h"
   )
+
+elseif(XSDK)
+  # The Xbox 360 through xsdk: threads on its pthreads, with the generic semaphore as it has no sem_*; timers, time and
+  # file operations on its POSIX layer.
+  set(SDL_PTHREADS_PRIVATE ON)
+  set(SDL_PTHREADS_SEM OFF)
+  # newlib declares signals, but the console delivers none.
+  set(HAVE_SIGNAL_H 0)
+  CheckPTHREAD()
+  if(SDL_CLOCK_GETTIME)
+    set(HAVE_CLOCK_GETTIME 1)
+  endif()
+
+  set(SDL_TIME_UNIX 1)
+  sdl_glob_sources(
+    "${SDL3_SOURCE_DIR}/src/time/unix/*.c"
+    "${SDL3_SOURCE_DIR}/src/time/unix/*.h"
+  )
+  set(HAVE_SDL_TIME TRUE)
+
+  set(SDL_TIMER_UNIX 1)
+  sdl_glob_sources(
+    "${SDL3_SOURCE_DIR}/src/timer/unix/*.c"
+    "${SDL3_SOURCE_DIR}/src/timer/unix/*.h"
+  )
+  set(HAVE_SDL_TIMERS TRUE)
+
+  set(SDL_FSOPS_POSIX 1)
+  sdl_sources("${SDL3_SOURCE_DIR}/src/filesystem/posix/SDL_sysfsops.c")
+  set(HAVE_SDL_FSOPS TRUE)
 
 elseif(NGAGE)
 

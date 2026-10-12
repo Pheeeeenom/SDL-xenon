@@ -29,6 +29,10 @@
 #include <time.h>
 #include <unistd.h>
 
+#ifdef SDL_PLATFORM_XSDK
+#define timezone _timezone // newlib's name for it
+#endif
+
 #if !defined(HAVE_CLOCK_GETTIME) && defined(SDL_PLATFORM_APPLE)
 #include <mach/clock.h>
 #include <mach/mach.h>
@@ -194,7 +198,7 @@ bool SDL_TimeToDateTime(SDL_Time ticks, SDL_DateTime *dt, bool localTime)
          * The notable exception is Solaris, where the timezone offset must still be retrieved in the strictly POSIX.1-2008
          * compliant way.
          */
-#if (_POSIX_VERSION >= 202405L) || (!defined(sun) && !defined(__sun))
+#if (_POSIX_VERSION >= 202405L) || (!defined(sun) && !defined(__sun) && !defined(SDL_PLATFORM_XSDK))
         dt->utc_offset = (int)tm->tm_gmtoff;
 #else
         if (localTime) {

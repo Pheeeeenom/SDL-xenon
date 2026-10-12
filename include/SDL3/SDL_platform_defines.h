@@ -473,6 +473,15 @@
 #define SDL_PLATFORM_3DS 1
 #endif
 
+#ifdef __XSDK__
+
+/**
+ * A preprocessor macro that is only defined if compiling for the Xbox 360
+ * through xsdk, a homebrew SDK for its retail kernel.
+ */
+#define SDL_PLATFORM_XSDK 1
+#endif
+
 #ifdef __NGAGE__
 
 /**
