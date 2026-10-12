@@ -30,7 +30,7 @@
 // this checks for HAVE_DBUS_DBUS_H internally.
 #include "core/linux/SDL_dbus.h"
 
-#if defined(SDL_PLATFORM_UNIX) && !defined(SDL_PLATFORM_ANDROID)
+#if defined(SDL_PLATFORM_UNIX) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_XSDK)
 #include "core/unix/SDL_gtk.h"
 #endif
 
@@ -717,7 +717,7 @@ void SDL_Quit(void)
     SDL_DBus_Quit();
 #endif
 
-#if defined(SDL_PLATFORM_UNIX) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_PRIVATE)
+#if defined(SDL_PLATFORM_UNIX) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_PRIVATE) && !defined(SDL_PLATFORM_XSDK)
     SDL_Gtk_Quit();
 #endif
 
@@ -822,6 +822,8 @@ const char *SDL_GetPlatform(void)
     return "PlayStation Vita";
 #elif defined(SDL_PLATFORM_3DS)
     return "Nintendo 3DS";
+#elif defined(SDL_PLATFORM_XSDK)
+    return "Xbox 360";
 #elif defined(SDL_PLATFORM_HURD)
     return "GNU/Hurd";
 #elif defined(__managarm__)

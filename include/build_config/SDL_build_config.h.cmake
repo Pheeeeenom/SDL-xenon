@@ -289,6 +289,7 @@
 #cmakedefine SDL_AUDIO_DRIVER_PSP 1
 #cmakedefine SDL_AUDIO_DRIVER_PS2 1
 #cmakedefine SDL_AUDIO_DRIVER_N3DS 1
+#cmakedefine SDL_AUDIO_DRIVER_XSDK 1
 #cmakedefine SDL_AUDIO_DRIVER_NGAGE 1
 #cmakedefine SDL_AUDIO_DRIVER_QNX 1
 
@@ -311,6 +312,7 @@
 #cmakedefine SDL_JOYSTICK_LINUX 1
 #cmakedefine SDL_JOYSTICK_MFI 1
 #cmakedefine SDL_JOYSTICK_N3DS 1
+#cmakedefine SDL_JOYSTICK_XSDK 1
 #cmakedefine SDL_JOYSTICK_PS2 1
 #cmakedefine SDL_JOYSTICK_PSP 1
 #cmakedefine SDL_JOYSTICK_RAWINPUT 1
@@ -518,6 +520,7 @@
 #cmakedefine SDL_FILESYSTEM_PSP 1
 #cmakedefine SDL_FILESYSTEM_PS2 1
 #cmakedefine SDL_FILESYSTEM_N3DS 1
+#cmakedefine SDL_FILESYSTEM_XSDK 1
 
 #cmakedefine SDL_FILESYSTEM_PRIVATE 1
 

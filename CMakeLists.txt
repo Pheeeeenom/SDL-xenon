@@ -3346,6 +3346,27 @@ elseif(XSDK)
   sdl_sources("${SDL3_SOURCE_DIR}/src/filesystem/posix/SDL_sysfsops.c")
   set(HAVE_SDL_FSOPS TRUE)
 
+  set(SDL_FILESYSTEM_XSDK 1)
+  sdl_glob_sources("${SDL3_SOURCE_DIR}/src/filesystem/xsdk/*.c")
+  set(HAVE_SDL_FILESYSTEM TRUE)
+
+  if(SDL_JOYSTICK)
+    set(SDL_JOYSTICK_XSDK 1)
+    sdl_glob_sources("${SDL3_SOURCE_DIR}/src/joystick/xsdk/*.c")
+    set(HAVE_SDL_JOYSTICK TRUE)
+  endif()
+
+  if(SDL_AUDIO)
+    # The kernel calls the driver back through xsdk's assembly entry, which keeps the registers its code relies on.
+    enable_language(ASM)
+    set(SDL_AUDIO_DRIVER_XSDK 1)
+    sdl_glob_sources(
+      "${SDL3_SOURCE_DIR}/src/audio/xsdk/*.c"
+      "${SDL3_SOURCE_DIR}/src/audio/xsdk/*.S"
+    )
+    set(HAVE_SDL_AUDIO TRUE)
+  endif()
+
 elseif(NGAGE)
 
   enable_language(CXX)
