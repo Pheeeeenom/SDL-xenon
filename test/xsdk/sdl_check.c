@@ -27,6 +27,9 @@
 #define TONE_MS         2000
 #define TONE_RATE       48000
 #define TONE_AMPLITUDE  0.25f
+// The console's time base steps in about 20 ns; the kernel's system time, a millisecond at a time.
+#define FINEST_STEP_NS  100000
+#define STEP_READS      1000000
 
 static int passed_count;
 static int failed_count;
@@ -82,6 +85,16 @@ static void check_timer(void)
     xsdk_log_write("sdl: SDL_Delay(%d) took %u us; SDL_DelayPrecise(16 ms) took %u us", DELAY_MS, (unsigned)delay_us,
                    (unsigned)precise_us);
     check("sdl: SDL_Delay(100) takes 100 to 150 ms by SDL_GetTicksNS", delay_us >= 100000 && delay_us < 150000);
+
+    // SDL reads CLOCK_MONOTONIC_RAW where the C library defines it, and falls back to gettimeofday if that's refused.
+    const Uint64 first = SDL_GetTicksNS();
+    Uint64 now = first;
+    for (int i = 0; i < STEP_READS && now == first; i++) {
+        now = SDL_GetTicksNS();
+    }
+    xsdk_log_write("sdl: SDL_GetTicksNS steps %u ns; the performance counter runs at %u Hz", (unsigned)(now - first),
+                   (unsigned)SDL_GetPerformanceFrequency());
+    check("sdl: SDL's clock steps finer than 0.1 ms", now != first && now - first < FINEST_STEP_NS);
 }
 
 static int SDLCALL thread_main(void *data)
