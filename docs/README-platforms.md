@@ -28,6 +28,7 @@ SDL3 has been known to work on the following platforms at some point:
 - [Windows](README-windows.md) (XP and later)
 - [Windows GDK](README-gdk.md)
 - [Xbox](README-gdk.md)
+- [Xbox 360](README-xsdk.md) (Homebrew, through xsdk)
 
 Note that the SDL maintainers do not test on all these platforms; if a less-common system breaks, [please let us know](https://github.com/libsdl-org/SDL/issues/new) and send patches if you can.
 
